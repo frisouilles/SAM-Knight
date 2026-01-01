@@ -1,4 +1,4 @@
-export const VERSION = "1.0.0";
+export const VERSION = "1.1.0";
 export const CONFIRM_KEYWORDS = ["Mute", "Exclure", "Confirm", "Yes", "Désactiver"];
 export const ACTIVE_LEAGUES = ["color-league-grey"];
 export const LEAGUES = [
@@ -11,16 +11,16 @@ export const LEAGUES = [
 ];
 
 export const LEAGUE_TOLERANCE = {
-  "color-league-grey": 0.75,
-  "color-league-bronze": 0.82,
+  "color-league-grey": 0.70,
+  "color-league-bronze": 0.80,
   "color-league-silver": 0.85,
   "color-league-gold": 0.90,
   "color-league-diamond": 0.95,
-  "color-league-royal": 0.99,
-  "default": 0.80
+  "color-league-royal": 0.98,
+  "default": 0.50
 };
 
-export const DEFAULT_NEUTRAL_THRESHOLD = 0.50;
+export const DEFAULT_NEUTRAL_THRESHOLD = 0.30;
 export const DEFAULT_NEUTRAL_ACTION = 'highlight';
 
 export const DEFAULT_WHITELIST = ["petite",

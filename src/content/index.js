@@ -9,7 +9,7 @@ import { DEFAULT_NEUTRAL_THRESHOLD, DEFAULT_NEUTRAL_ACTION } from './config.js';
 // ==========================================
 //              CONFIGURATION
 // ==========================================
-const VERSION = "1.0.28";
+const VERSION = "1.1.0";
 const PREFIX = "[AM-Knight]";
 const CONFIRM_KEYWORDS = ["Mute", "Exclure", "Confirm", "Yes", "Désactiver", "Désactive", "Désactivez"];
 let ACTIVE_LEAGUES = ["color-league-grey"];
