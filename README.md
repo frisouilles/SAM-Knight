@@ -8,8 +8,11 @@
 
 - **Hybrid Filtering:** Aho-Corasick algorithms (exact words) + Fuzzy Matching (typo tolerance).
 - **Embedded AI (Privacy First):** Uses a distilled BERT model (TensorFlow.js) running **locally** in your browser. No chat data is sent to external servers.
-- **Console Overlay:** Unobtrusive interface injected directly into the page to monitor moderation actions.
-- **Developer Mode:** Dedicated DevTools panel for debugging.
+- **3-Zone Sensitivity Control:** Define custom thresholds for **Clean**, **Neutral**, and **Toxic** messages via a double-slider interface.
+- **Smart Neutral Actions:** Suspicious messages can be automatically highlighted or partially hidden based on your preference.
+- **Dataset Management:** Built-in tools to import/export and track statistics of your own moderation data (CSV).
+- **Console Overlay:** Unobtrusive interface injected directly into the page to monitor moderation actions in real-time.
+- **Developer Mode:** Dedicated DevTools panel for advanced debugging.
 
 ## ⚙️ Configuration
 
