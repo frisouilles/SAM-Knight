@@ -156,7 +156,7 @@ function handleMatch(msg, username, text, matchedLeague, match, isTargeted, aiIn
     console.log(`[AM-Knight] 🔍 DIAGNOSTIC REFUS MUTE: GlobalMute=${isAutoMuteActive}, UserCiblé=${isTargeted}, LigueUser=${matchedLeague.id}, LiguesActives=${JSON.stringify(ACTIVE_LEAGUES)}`);
   }
 
-  logToUI(`${isAutoMuteSet ? "MUTE" : "SCAN"} | ${reason} ${aiInfo}`, isAutoMuteSet ? "action" : "warn", userInfo);
+  logToUI(`${isAutoMuteSet ? "MUTE" : "SCAN"} | ${reason} ${aiInfo}`, "toxic", userInfo);
 
   if (isAutoMuteSet && !mutedSet.has(username)) {
     const btn = msg.querySelector(MUTE_BUTTON_SELECTOR);
@@ -187,7 +187,7 @@ function handleNeutral(msg, username, text, matchedLeague, match, aiInfo = "") {
   const userInfo = { name: username, color: matchedLeague.color, fullMessage: text, found: match.found, aiInfo };
   
   // Log discret
-  logToUI(`NEUTRAL | ${reason} ${aiInfo}`, "warn", userInfo);
+  logToUI(`NEUTRAL | ${reason} ${aiInfo}`, "neutral", userInfo);
 
   // Action Visuelle
   if (neutralAction === 'highlight') {
@@ -307,7 +307,7 @@ function processMessages(node) {
           handleMatch(msg, username, text, matchedLeague, aiMatch, isTargeted, aiInfo);
         } else {
           const status = text.split(/\s+/).length < 3 ? "SHORT" : "OK";
-          logToUI(`SCAN | ${status} ${aiInfo}`, "safe", { name: username, color: matchedLeague.color, fullMessage: text, aiInfo });
+          logToUI(`SCAN | ${status} ${aiInfo}`, "clean", { name: username, color: matchedLeague.color, fullMessage: text, aiInfo });
         }
       }
     });

@@ -306,10 +306,11 @@ body {
   padding: 8px 12px; border-bottom: 1px solid #2a2a2a;
 }
 .log-entry:hover { background: #252526; }
+.log-entry.clean { background: rgba(76, 217, 100, 0.03); border-left: 3px solid #4cd964; }
+.log-entry.neutral { border-left: 3px solid #aaaaaa; }
+.log-entry.toxic { background: rgba(255, 59, 48, 0.04); border-left: 3px solid #ff3b30; }
+
 .log-entry.action { background: rgba(255, 51, 51, 0.08); border-left: 3px solid #ff3333; }
-.log-entry.warn { border-left: 3px solid #ffcc00; }
-.log-entry.info { border-left: 3px solid #00ccff; }
-.log-entry.safe { border-left: 3px solid #444; }
 
 .info-row { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
 .col-time { color: #666; font-size: 11px; white-space: nowrap; }
@@ -333,8 +334,9 @@ body {
 .col-indent { width: 55px; flex-shrink: 0; } /* Aligné sous le temps */
 .col-message { font-size: 14px; line-height: 1.4; color: #ddd; word-break: break-word; flex-grow: 1; }
 
-.action .col-message { color: #ffaaaa; }
-.warn .col-message { color: #ffeebb; }
+.toxic .col-message { color: #ffaaaa; }
+.neutral .col-message { color: #ffeebb; }
+.clean .col-message { color: #ccffcc; }
 
 .empty-state { display: flex; justify-content: center; align-items: center; height: 100%; color: #444; text-align: center; }
 
