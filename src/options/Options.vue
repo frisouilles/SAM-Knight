@@ -126,6 +126,24 @@ const cleanThreshold = ref(0.40)
 const toxicThreshold = ref(0.70)
 const neutralAction = ref('highlight')
 
+const leagues = ref([
+  { id: "color-league-grey", label: "Gry", color: "#aaaaaa" },
+  { id: "color-league-bronze", label: "Bronze", color: "#cd7f32" },
+  { id: "color-league-silver", label: "Argent", color: "#c9e7fe" },
+  { id: "color-league-gold", label: "Or", color: "#ffd700" },
+  { id: "color-league-diamond", label: "Diamant", color: "#d424ff" },
+  { id: "color-league-royal", label: "Royal", color: "#e54500" },
+])
+
+const leagueSettings = ref({
+  "color-league-grey": 0.70,
+  "color-league-bronze": 0.80,
+  "color-league-silver": 0.85,
+  "color-league-gold": 0.90,
+  "color-league-diamond": 0.95,
+  "color-league-royal": 0.98
+})
+
 const trainingData = ref([])
 const importInput = ref(null)
 
@@ -236,7 +254,8 @@ onMounted(() => {
     isAutoMuteActive: false,
     cleanThreshold: 0.40,
     toxicThreshold: 0.70,
-    neutralAction: 'highlight'
+    neutralAction: 'highlight',
+    leagueTolerances: {} 
   }, (items) => {
     blacklistText.value = items.customBlacklist.join('\n')
     whitelistText.value = items.customWhitelist.join('\n')
@@ -244,6 +263,10 @@ onMounted(() => {
     cleanThreshold.value = items.cleanThreshold
     toxicThreshold.value = items.toxicThreshold
     neutralAction.value = items.neutralAction
+    // Merge defaults with stored values
+    if (items.leagueTolerances) {
+       leagueSettings.value = { ...leagueSettings.value, ...items.leagueTolerances }
+    }
   })
 })
 
@@ -265,7 +288,8 @@ const saveOptions = () => {
     customWhitelist: whitelistArray,
     cleanThreshold: cleanThreshold.value,
     toxicThreshold: toxicThreshold.value,
-    neutralAction: neutralAction.value
+    neutralAction: neutralAction.value,
+    leagueTolerances: leagueSettings.value
   }, () => {
     saving.value = false
     statusMsg.value = 'Options enregistrées !'
