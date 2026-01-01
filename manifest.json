@@ -1,0 +1,63 @@
+{
+  "name": "SAM-Knight",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Automated moderation bot for Stripchat: filters insults, spam, and freeloaders.",
+  "permissions": [
+    "storage",
+    "offscreen"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "host_permissions": [
+    "https://huggingface.co/*",
+    "https://*.huggingface.co/*",
+    "https://tfhub.dev/*",
+    "https://*.tfhub.dev/*",
+    "https://storage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/index.js",
+    "type": "module"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "devtools_page": "devtools.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "*://stripchat.com/*",
+        "*://fr.stripchat.com/*"
+      ],
+      "js": [
+        "src/content/index.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/*",
+        "model/*",
+        "wasm/*"
+      ],
+      "matches": [
+        "*://stripchat.com/*",
+        "*://fr.stripchat.com/*"
+      ]
+    }
+  ]
+}

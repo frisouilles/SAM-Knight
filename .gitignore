@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+*.log
+venv/
+training/stripchat_training_data.csv
+training/output_model/
+training/__pycache__/
+*.pyc
