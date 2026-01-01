@@ -95,8 +95,35 @@ function updateConfiguration(callback) {
 }
 
 function logToUI(msg, type, userInfo) {
-  console.log("[AM-Knight] [Content] logToUI:", msg, type); // Debug
   try {
+    const name = userInfo?.name || "System";
+    const leagueColor = userInfo?.color || "#888";
+    
+    // Découpage du message : SCAN | OK | Ligue(Limit) | Treatment | Diag
+    const parts = msg.split(" | ");
+    
+    if (parts.length >= 4) {
+      const treatment = parts[3];
+      const diag = parts[4] || "";
+      
+      let resColor = "#aaaaaa"; // Gris par défaut (Neutre)
+      if (treatment === "TOXIQUE" || msg.includes("MOT_INTERDIT") || msg.includes("MUTE")) {
+        resColor = "#ff3b30"; // Rouge
+      } else if (treatment === "CLEAN") {
+        resColor = "#4cd964"; // Vert
+      }
+
+      console.log(
+        `%c${name}%c | %c${parts[2]}%c | %c${treatment}%c | %c${diag}`,
+        "font-weight: bold; color: #fff", "color: #555",
+        `color: ${leagueColor}; font-weight: bold`, "color: #555",
+        `color: ${resColor}; font-weight: bold`, "color: #555",
+        `color: ${resColor}`
+      );
+    } else {
+      console.log(`[AM-Knight] ${msg}`);
+    }
+
     chrome.runtime.sendMessage({ type: 'LOG_TO_DEVTOOLS', msg, logType: type, userInfo });
   } catch (e) {
     console.error("[AM-Knight] [Content] logToUI error:", e);
