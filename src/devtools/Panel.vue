@@ -60,9 +60,7 @@
             </span>
             <span v-else class="username system">System</span>
             
-            <span v-if="log.userInfo && log.userInfo.aiInfo" class="ai-details">
-              {{ log.userInfo.aiInfo }}
-            </span>
+            <span v-if="log.userInfo && log.userInfo.aiInfo" class="ai-details" v-html="formatAiDetails(log.userInfo.aiInfo)"></span>
             <span v-else class="ai-details">{{ log.msg }}</span>
           </div>
 
@@ -180,6 +178,33 @@ const highlightMessage = (userInfo) => {
     } catch (e) { console.error("Regex error", e); }
   }
   return text;
+}
+
+const formatAiDetails = (info) => {
+  if (!info) return "";
+  const parts = info.split('|');
+  if (parts.length < 3) return info; 
+
+  const prefix = parts.slice(0, -1).join('|');
+  const scorePart = parts[parts.length - 1]; 
+
+  const match = scorePart.match(/([a-z]+):([\d.]+)%/);
+  let style = 'color: #888';
+  
+  if (match) {
+     const label = match[1];
+     const score = parseFloat(match[2]);
+     
+     if (label === 'toxic' || label.includes('toxic')) {
+        style = `color: hsl(0, ${Math.min(100, score + 20)}%, 60%); font-weight: ${score > 70 ? 'bold' : 'normal'}`;
+     } else if (label === 'clean') {
+        style = `color: hsl(120, ${Math.min(100, score + 20)}%, 40%); font-weight: ${score > 70 ? 'bold' : 'normal'}`;
+     } else {
+        style = `color: #aaaaaa`;
+     }
+  }
+
+  return `<span style="color:#888">${prefix}|</span><span style="${style}">${scorePart}</span>`;
 }
 
 const saveExample = (log, label) => {
