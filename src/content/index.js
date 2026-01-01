@@ -22,15 +22,16 @@ const LEAGUES = [
   { id: "color-league-royal", short: "Ryl", label: "Royal", color: "#e54500" },
 ];
 
-const LEAGUE_TOLERANCE = {
-  "color-league-grey": 0.75,
-  "color-league-bronze": 0.82,
+const DEFAULT_LEAGUE_TOLERANCE = {
+  "color-league-grey": 0.70,
+  "color-league-bronze": 0.80,
   "color-league-silver": 0.85,
   "color-league-gold": 0.90,
   "color-league-diamond": 0.95,
-  "color-league-royal": 0.99,
+  "color-league-royal": 0.98,
   "default": 0.80
 };
+let leagueToleranceSettings = Object.assign({}, DEFAULT_LEAGUE_TOLERANCE);
 
 const DEFAULT_WHITELIST = ["petite", "strip", "mieux", "belle", "belles", "mille", "meilleur", "meilleure", "bonne", "donne", "sonne", "tonne", "canne", "panne", "vanne", "passe", "basse", "casse", "fasse", "lisse", "masse", "tasse", "lasse", "classe", "pure", "pate", "pote", "rate", "date", "gate", "hote", "note", "vote", "cote", "cure", "mure", "dure", "bure", "sure", "elle", "meme", "pere", "mere", "frere", "assis", "assez", "aussi", "ainsi", "pass", "bass", "mass", "grass", "glass", "class", "duck", "clock", "sock", "rock", "lock", "block", "dock", "beach", "peach", "teach", "reach", "sheet", "shirt", "shot", "shut", "hello", "help", "hell", "voiture", "rencontre", "vivre"];
 const BAD_EMOJIS = ["\uD83D\uDD95", "\uD83E\uDD2E", "\uD83E\uDD22", "\uD83D\uDCA9", "\uD83D\uDC80", "\u2620", "\uD83E\uDE78", "\uD83D\uDC89", "\uD83E\uDD21", "\uD83E\uDD2C"];
@@ -72,7 +73,8 @@ function updateConfiguration(callback) {
       activeLeagues: ["color-league-grey"],
       cleanThreshold: 0.40,
       toxicThreshold: 0.70,
-      neutralAction: DEFAULT_NEUTRAL_ACTION
+      neutralAction: DEFAULT_NEUTRAL_ACTION,
+      leagueTolerances: {}
     }, function(items) {
       if (chrome.runtime.lastError) return;
       BAD_WORDS = DEFAULT_BAD_WORDS.concat(items.customBlacklist);
@@ -83,6 +85,9 @@ function updateConfiguration(callback) {
       cleanThreshold = items.cleanThreshold;
       toxicThreshold = items.toxicThreshold;
       neutralAction = items.neutralAction;
+      if (items.leagueTolerances) {
+        leagueToleranceSettings = { ...DEFAULT_LEAGUE_TOLERANCE, ...items.leagueTolerances };
+      }
       buildAlgorithms();
       if (callback) callback();
     });
@@ -201,7 +206,7 @@ function processMessages(node) {
 
     let matchedLeague = null;
     let isTargeted = false;
-    let finalTolerance = LEAGUE_TOLERANCE["default"];
+    let finalTolerance = leagueToleranceSettings["default"];
 
     // 1. Détection Prioritaire : "Ex" (Anciens gradés)
     // Structure: <span class="color-league-bronze"><sup>ex</sup></span>
@@ -211,7 +216,7 @@ function processMessages(node) {
       for (const league of LEAGUES) {
         if (parent && parent.classList.contains(league.id)) {
           matchedLeague = league;
-          finalTolerance = LEAGUE_TOLERANCE[league.id];
+          finalTolerance = leagueToleranceSettings[league.id];
           if (ACTIVE_LEAGUES.includes(league.id)) isTargeted = true;
           break;
         }
@@ -224,7 +229,7 @@ function processMessages(node) {
         const leagueEl = msg.querySelector("." + league.id);
         if (leagueEl) {
           matchedLeague = league;
-          finalTolerance = LEAGUE_TOLERANCE[league.id];
+          finalTolerance = leagueToleranceSettings[league.id];
           if (leagueEl.querySelector(".username-role-icon.king")) finalTolerance = 0.99;
           if (ACTIVE_LEAGUES.includes(league.id)) isTargeted = true;
           break;
@@ -241,7 +246,10 @@ function processMessages(node) {
                || checkCaps(text);
 
     chrome.runtime.sendMessage({ type: 'AI_REQUEST', text }, (result) => {
-      if (chrome.runtime.lastError) return;
+      if (chrome.runtime.lastError) {
+        console.warn("[AM-Knight] Communication perdue (Context Invalidated?). Veuillez rafraîchir la page.", chrome.runtime.lastError);
+        return;
+      }
       const score = result ? (typeof result === 'object' ? result.score : result) : 0;
       const diagRaw = (result && typeof result === 'object' && result.diag) ? result.diag : '';
       const limitPct = (finalTolerance * 100).toFixed(0);
@@ -323,6 +331,9 @@ if (chrome.runtime?.id) {
       if (changes.cleanThreshold) cleanThreshold = changes.cleanThreshold.newValue;
       if (changes.toxicThreshold) toxicThreshold = changes.toxicThreshold.newValue;
       if (changes.neutralAction) neutralAction = changes.neutralAction.newValue;
+      if (changes.leagueTolerances) {
+         leagueToleranceSettings = { ...DEFAULT_LEAGUE_TOLERANCE, ...changes.leagueTolerances.newValue };
+      }
       if (changes.customBlacklist || changes.customWhitelist) {
         updateConfiguration(); // Recharge les listes et reconstruit les algos
       }

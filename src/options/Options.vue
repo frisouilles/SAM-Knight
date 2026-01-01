@@ -58,6 +58,17 @@
     <hr style="border: 0; border-top: 1px solid #444; margin: 30px 0;">
 
     <div class="section">
+      <h2>🏅 Tolérance par Ligue</h2>
+      <p class="help">Ajustez le niveau de confiance par défaut pour chaque ligue (utilisé à titre indicatif ou pour des modes avancés).</p>
+      <div v-for="league in leagues" :key="league.id" class="control-group">
+         <label :style="{ color: league.color }">{{ league.label }} ({{ (leagueSettings[league.id] * 100).toFixed(0) }}%)</label>
+         <input type="range" v-model.number="leagueSettings[league.id]" min="0.1" max="1.0" step="0.01">
+      </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #444; margin: 30px 0;">
+
+    <div class="section">
       <h2>🧠 Dataset IA (Entraînement)</h2>
       <p class="help">Données récoltées manuellement pour entraîner le futur modèle personnalisé.</p>
       
